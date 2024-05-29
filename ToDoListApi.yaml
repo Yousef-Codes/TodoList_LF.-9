@@ -1,0 +1,224 @@
+openapi: 3.0.1
+info:
+  title: Todo-Listen-Verwaltung
+  description: 'Yousef Taamari'
+  contact:
+    email:
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+servers:
+  - url: http://127.0.0.1:5000/
+tags:
+  - name: Listenverwaltung
+paths:
+  /todo-list/{list_id}:
+    get:
+      tags:
+        - Listenverwaltung
+      summary: Retrieve all items from a specific list
+      operationId: getList
+      parameters:
+        - name: list_id
+          in: path
+          description: The unique identifier of the list
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully retrieved the list items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoEntry'
+        404:
+          description: The list id provided is invalid
+        500:
+          description: An error occurred on the server  
+          content: {}
+    delete:
+      tags:
+        - Listenverwaltung
+      summary: Remove a list and all its items
+      description: Permanently deletes the specified todo list along with all its entries. This action cannot be undone.
+      operationId: deleteList
+      parameters:
+        - name: list_id
+          in: path
+          description: The unique identifier of the todo list to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The list and all associated items were successfully deleted
+        404:
+          description: The provided list id does not exist
+        500:
+          description: An error occurred while trying to delete the list
+  /todo-list:
+    post:
+      tags:
+        - Listenverwaltung
+      summary: Create a new list
+      operationId: addList
+      requestBody:
+        description: The list object to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoList'
+        required: true
+      responses:
+        201:
+          description: The list was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoList'
+        406:
+          description: The provided list is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoList'       
+        500:
+          description: The list could not be created due to a server error
+          content: {}
+  /todo-list/{list_id}/entry:
+    post:
+      tags:
+        - Eintragsverwaltung
+      summary: Add a new entry to a list
+      operationId: AddEntry
+      parameters:
+      - name: list_id
+        in: path
+        description: The unique identifier of the list
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The entry object to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoList'
+        required: true
+      responses:
+        201:
+          description: The entry was successfully added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoList'
+        406:
+          description: The provided entry is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoList'         
+        500:
+          description: The entry could not be added due to a server error
+          content: {}
+  /todo-list/{list_id}/entry/{entry_id}:
+    patch:
+      tags:
+        - Eintragsverwaltung
+      summary: Update a specific entry in a list
+      description: Modify the specified entry by applying the attributes in the JSON body to the existing entry. Returns the updated entry data.
+      operationId: updateEntry
+      parameters:
+        - name: list_id
+          in: path
+          description: The unique identifier of the todo list
+          required: true
+          schema:
+            type: string
+        - name: entry_id
+          in: path
+          description: The unique identifier of the entry to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: JSON object containing the attributes to update in the entry
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoEntry'
+      responses:
+        200:
+          description: The entry was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoEntry'
+        404:
+          description: The specified list or entry was not found
+        500:
+          description: An unexpected error occurred while updating the entry
+          content: {} 
+    delete:
+      tags:
+        - Eintragsverwaltung
+      summary: Remove a specific entry from a list
+      description: Permanently deletes a specific entry from the specified todo list. This action is irreversible.
+      operationId: deleteEntry
+      parameters:
+        - name: list_id
+          in: path
+          description: The unique identifier of the todo list from which the entry will be deleted
+          required: true
+          schema:
+            type: string
+        - name: entry_id
+          in: path
+          description: The unique identifier of the entry to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The entry was successfully deleted
+        404:
+          description: The provided list id or entry id does not exist
+        500:
+          description: A server error prevented the entry from being deleted
+components:
+  schemas:
+    TodoList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    TodoEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier for the entry
+        name:
+          type: string
+          description: The name of the entry
+        description:
+          type: string
+          description: A brief description of the entry
+        user_id:
+          type: string
+          format: uuid
+          description: The identifier of the user who owns this entry
+        list_id:
+          type: string
+          format: uuid
+          description: The identifier of the list to which this entry belongs
+```
