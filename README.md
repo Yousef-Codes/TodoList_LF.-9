@@ -56,7 +56,7 @@ git clone
 ```  
 Navigiere in das Verzeichnis:  
 ```bash
-cd ToDoList_ifa22
+cd TodoList_LF.-9
 ```  
 Starte die Web-App mit Docker Compose:  
 ```bash
