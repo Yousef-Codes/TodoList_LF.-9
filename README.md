@@ -67,7 +67,7 @@ Die Web-App ist nun unter `http://192.168.24.132:5000` erreichbar.
 **Git-Befehle**  
 Klonen des Repositories:  
 ```bash
-git clone https://github.com/FaresCodeDev/ToDoList_ifa22.git
+git clone https://github.com/Yousef-Codes/TodoList_LF.-9.git
 ```  
 Pullen der neuesten Änderungen:  
 ```bash
